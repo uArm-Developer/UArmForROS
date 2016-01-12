@@ -9,8 +9,9 @@ Make sure your uarm has been calibrated in [THIS WAY](http://developer.ufactory.
 ### 1.2 Package Download and Install
 Install ros package in your src folder of your Catkin workspace.
 ```bash
-$ cd ~/catkin_ws
+$ cd ~/catkin_ws/src
 $ git clone https://github.com/uArm-Developer/UArmForROS.git
+$ cd ~/catkin_ws
 $ catkin_make
 ```
 ## 2. Source FIles
