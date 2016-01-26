@@ -371,8 +371,11 @@ def moveToTimeCallback(coordsAndT):
 		y = -y
 	z = coordsAndT.z
 	time = coordsAndT.time
-	#uarm.moveToWithTime(x,y,z,time)
-	uarm.moveToAtOnce(x,y,z)
+	if time == 0:
+		uarm.moveToAtOnce(x,y,z)
+	else:
+		uarm.moveToWithTime(x,y,z,time)
+
 	print 'Movement: Moved Once' 
 	pass
 
