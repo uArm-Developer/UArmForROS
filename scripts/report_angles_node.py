@@ -37,7 +37,7 @@ def execute():
 	rate = rospy.Rate(10)
 
 	# report once		
-	if len(sys.argv) == 1:
+	if len(sys.argv) == 1 or len(sys.argv)==3:
 		pub.publish(1)
 		time.sleep(0.15)
 		print 'Four Servo Angles: %2.2f, %2.2f, %2.2f and %2.2f degrees.' %(rospy.get_param('servo_1'),rospy.get_param('servo_2'),rospy.get_param('servo_3'),rospy.get_param('servo_4'))
