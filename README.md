@@ -249,6 +249,55 @@ source ~/catkin_ws/devel/setup.bash
     
     -`rosrun uarm uarm_status_node.py detach`
 
+## 5. Visualization in RViz
+---
+### 5.1 Functions
+
+- Visualization -- display.launch: This function will display robot movement in realtime when you manually move uArm
+- Control -- control.launch: This function will allow you control the end-effector movement in 3 DOF along x,y,z axis.
+
+### 5.2 Launch and Run
+-**Step 1**: In one terminal, connect uarm and set the listen mode as shown above
+```
+roscore  #open another tab
+rosrun uarm uarm_core.py connect /dev/ttyUSB0    # connect uarm 
+e   # transfer to listen mode
+```
+-**Step 2**: Luanch
+ 
+a) For visualization function, in second termianl, run
+
+    roslaunch uarm display.launch
+  
+<img src="http://developer.ufactory.cc/images/visualization-visual.png" alt="unpack" style="width: 640px;"/>
+
+b) For control function, in second termianl, run
+
+    roslaunch uarm control.launch
+<img src="http://developer.ufactory.cc/images/visualization-control.png" alt="unpack" style="width: 640px;"/>
+    
+
+-**Step 3**: Display:
+Open rviz to view robot
+```
+rosrun rviz rviz  # set Cell Size to 0.1
+```
+For both functions, import robot model: 
+
+```
+Add  -> RobotModel
+set Fixed Frame -> base
+```
+a) For visualization function, right now a robot will display in the main window
+
+b) For control function, 
+
+```
+Add -> InteractiveMarker
+Update Topic -> /uarm_controller/update
+```
+Drag 3 pairs of arrows to control uarm along x,y,z axis.
+
 
 
 
