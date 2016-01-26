@@ -241,6 +241,7 @@ if __name__=="__main__":
     time.sleep(1)
 
     position = Point( float(ini_x), float(ini_y), float(ini_z))
+    display(ivsKine(float(ini_x),float(ini_y),float(ini_z)))
     #position = Point( 0,0 ,0 )
     make6DofMarker( True, InteractiveMarkerControl.NONE, position, True)
     server.applyChanges()

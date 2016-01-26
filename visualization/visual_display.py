@@ -5,6 +5,7 @@ from std_msgs.msg import Header
 import sys
 import math 
 import time
+from std_msgs.msg import String
 from std_msgs.msg import Int32
 
 PI = math.pi
@@ -12,9 +13,11 @@ PI = math.pi
 def main_fcn():
 	pub = rospy.Publisher('joint_states',JointState,queue_size = 10)
 	pub2 = rospy.Publisher('read_angles',Int32,queue_size = 10)
+	pub3 = rospy.Publisher('uarm_status',String,queue_size = 100)
 
 	rospy.init_node('display',anonymous = True)
 	rate = rospy.Rate(20)
+	
 
 	joint_state_send = JointState()
 	joint_state_send.header = Header()
@@ -32,6 +35,7 @@ def main_fcn():
 
 		pub2.publish(1)
 		if trigger == 1:
+			pub3.publish("detach")
 			time.sleep(1)
 			trigger = 0		
 				
