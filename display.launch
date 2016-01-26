@@ -1,0 +1,8 @@
+<launch>
+
+        <param name="robot_description" command="cat $(find uarm)/urdf/model.urdf" />
+        <node name="robot_state_publisher" pkg="robot_state_publisher" type="state_publisher" />
+        <node name="read_angles" pkg="uarm" type="report_angles_node.py" output= "screen" />
+		<node name="state_publisher" pkg="uarm" type="visual_display.py" output = "screen" />
+
+</launch>
