@@ -20,7 +20,8 @@ import time
 import rospy
 
 # Import uarm for python library
-from UArmForPython.uarm_python import Uarm
+#from UArmForPython.uarm_python import Uarm
+import pyuarm
 
 # Import messages type
 from std_msgs.msg import String
@@ -34,20 +35,21 @@ from uarm.msg import CoordsWithTS4
 
 # Read current Coords function
 def readCurrentCoords():
-	cc = uarm.currentCoord()
-	print 'Current location is x: %2.2fcm, y: %2.2fcm, z: %2.2fcm.' %(cc[1],cc[2],cc[3])
+	cc = uarm.read_coords(1)
+	print cc
+	print 'Current location is x: %2.2fcm, y: %2.2fcm, z: %2.2fcm.' %(cc[0],-1*float(cc[1]),-1*float(cc[2]))
 
-	rospy.set_param('current_x',cc[1])
-	rospy.set_param('current_y',cc[2])
-	rospy.set_param('current_z',cc[3])
+	rospy.set_param('current_x',cc[0])
+	rospy.set_param('current_y',-1*float(cc[1]))
+	rospy.set_param('current_z',-1*float(cc[2]))
 
 # Read current Angles function
 def readCurrentAngles():
 	ra = {}
-	ra['s1'] = uarm.readAngle(1)
-	ra['s2'] = uarm.readAngle(2)
-	ra['s3'] = uarm.readAngle(3)
-	ra['s4'] = uarm.readAngle(4)
+	ra['s1'] = uarm.read_servo_angle(0,1)
+	ra['s2'] = uarm.read_servo_angle(1,1)
+	ra['s3'] = uarm.read_servo_angle(2,1)
+	ra['s4'] = uarm.read_servo_angle(3,1)
 	
 	
 	print 'Four Servo Angles: %2.2f, %2.2f, %2.2f and %2.2f degrees.' %(ra['s1'], ra['s2'],ra['s3'],ra['s4'])
@@ -59,7 +61,8 @@ def readCurrentAngles():
 
 # Read stopper function
 def readStopperStatus():
-	val = uarm.stopperStatus()
+	for i in range(2):
+		val = uarm.read_digital(2,1)
 	if val == 1:
 		print 'Stopper is actived'
 		rospy.set_param('stopper_status','HIGH')
@@ -97,7 +100,7 @@ def connectFcn():
 
 		if len(sys.argv) == 2:
 			failed_number = 21
-			uarm = Uarm('/dev/ttyUSB0')
+			uarm = pyuarm.get_uarm()
 			
 			connectionStatus = 1
 
@@ -110,11 +113,10 @@ def connectFcn():
 
 			if sys.argv[2] == 'l':
 				failed_number = 23
-				uarm = Uarm('/dev/ttyUSB0')
+				uarm = pyuarm.get_uarm()
 				controlFcnLoop = False
 				print 'Connected'
 			else:
-				uarm = Uarm(sys.argv[2])
 				connectionStatus = 1
 				print 'Connected'
 			return 22
@@ -122,7 +124,7 @@ def connectFcn():
 		# followed by l - directly listen to nodes
 		elif len(sys.argv) == 4:
 			failed_number = 23
-			uarm = Uarm(sys.argv[2])
+			uarm =  pyuarm.get_uarm()
 
 			connectionStatus = 1
 			print 'Connected'
@@ -151,19 +153,19 @@ def controlFcn():
 			print '============================================================'
 			print 'h            - show help and list all commands'
 			print 'e            - exit loop - begin to listen to subscriber'
-			print 'attach       - attach uarm (use at in short for attach)'
+
 			print 'detach       - detach uarm (use de in short for detach)'
 			print 'readAngles   - print 4 angles of uarm (use ra in short for readAngles)'
 			print 'writeAngles a1 a2 a3 a4 - write 4 angles of uarm - for example(writeAgnels 120 50 50 40)'
 			print '                        - (use wa in short for writeAngles)'
-			print 'currentCoords - print current coordinates (use cc in short for attach)'
+			print 'currentCoords - print current coordinates (use cc in short for currentCoords)'
 			print '-------- move to ---------(use mt in short for moveTo)'
 			print 'moveTo x y z  - move To a certain point - for example(moveTo 12 -12 12)'
 			print 'moveTo x y z sec  - move To a certain point with time- for example(moveTo 12 -12 12 2)'
 			print 'moveTo x y z sec servo_4  - move To a certain point with both time and servo 4 angle'
 			print '--------------------------'
 			print 'pump HIGH/LOW - pump on or pump off - for example (pump HIGH) or (pump LOW) (use pp)'
-			print 'stopperStatus - print status of stopper (use ss in short for attach)'
+			print 'stopperStatus - print status of stopper (use ss in short for stopperStatus)'
 			print '============================================================'
 
 			print ' '
@@ -178,18 +180,10 @@ def controlFcn():
 		else:
 			commands_split = commands.split()
 			
-			# Attch
-			if commands_split[0] == 'attach' or commands_split[0] == 'at':
-				if len(commands_split) == 1:
-					uarm.uarmAttach()
-				else:
-					print 'no other commands should be input'
-				pass
-
 			# Detach
-			elif commands_split[0] == 'detach'or commands_split[0] == 'de':
+			if commands_split[0] == 'detach'or commands_split[0] == 'de':
 				if len(commands_split) == 1:
-					uarm.uarmDetach()
+					uarm.detach_all_servos()
 				else:
 					print 'no other commands should be input'
 				pass
@@ -210,9 +204,9 @@ def controlFcn():
 					print 'Too many inputs'
 				else:
 					if commands_split[1] == '1' or commands_split[1].lower() == 'high' or commands_split[1].lower() == 'on':
-						uarm.pumpOn()
+						uarm.pump_control(1)
 					elif commands_split[1] == '0' or commands_split[1].lower() == 'low'or commands_split[1].lower() == 'off':
-						uarm.pumpOff()
+						uarm.pump_control(0)
 					else:
 						print 'Incorrect inputs, should input 1 / 0 / HIGH / LOW / ON / OFF'
 				pass
@@ -238,8 +232,11 @@ def controlFcn():
 							a[i] = 180
 						elif a[i] <0:
 							a[i] = 0
-					uarm.uarmAttach()
-					uarm.writeAngle(a['s1'],a['s2'],a['s3'],a['s4'])
+
+					uarm.write_servo_angle(0,a['s1'],1)
+					uarm.write_servo_angle(1, a['s2'], 1)
+					uarm.write_servo_angle(2, a['s3'], 1)
+					uarm.write_servo_angle(3, a['s4'], 1)
 				else:
 					print '4 servo angles should be input'
 				pass
@@ -260,7 +257,7 @@ def controlFcn():
 					if y>0:
 						y = -y
 					z = float(commands_split[3])
-					uarm.moveTo(x,y,z)
+					uarm.move_to_options(x,y,z,0,0,2,0,0)
 
 				elif len(commands_split) == 5:
 					x = float(commands_split[1])
@@ -269,7 +266,7 @@ def controlFcn():
 						y = -y
 					z = float(commands_split[3])
 					time = int(commands_split[4])
-					uarm.moveToWithTime(x,y,z,time)
+					uarm.move_to_options(x, y, z, 0, 0, time, 0, 0)
 
 					pass
 
@@ -283,7 +280,7 @@ def controlFcn():
 					servo_4 = int(commands_split[4])
 					if servo_4 > 180: servo_4 = 180
 					if servo_4 <0 : servo_4 =0
-					uarm.moveToWithS4(x,y,z,time,1,servo_4)
+					uarm.move_to_options(x, y, z, servo_4, 0, time, 0, 0)
 					pass
 
 				else:
@@ -297,10 +294,10 @@ def pumpCallack(data):
 	data_input = data.data
 
 	if data_input == 0:
-		uarm.pumpOff()
+		uarm.pump_control(0)
 		print 'Pump: Off'
 	elif data_input == 1:
-		uarm.pumpOn()
+		uarm.pump_control(1)
 		print 'Pump: On'
 	else:
 		pass
@@ -313,10 +310,10 @@ def pumpStrCallack(data):
 	print data_input
 	
 	if data_input.lower() == 'low' or data_input.lower() == 'off':
-		uarm.pumpOff()
+		uarm.pump_control(0)
 		print 'Pump: Off'
 	elif data_input.lower() == 'on' or data_input.lower() == 'high':
-		uarm.pumpOn()
+		uarm.pump_control(1)
 		print 'Pump: On'
 	else:
 		pass
@@ -333,8 +330,12 @@ def writeAnglesCallback(servos):
 	for i in servo:
 		if servo[i]>180: servo[i] = 180
 		if servo[i]<0: servo[i] = 0
-	uarm.uarmAttach()
-	uarm.writeAngle(servo['s1'],servo['s2'],servo['s3'],servo['s4'])
+
+	uarm.write_servo_angle(0, servo['s1'], 1)
+	uarm.write_servo_angle(1, servo['s2'], 1)
+	uarm.write_servo_angle(2, servo['s3'], 1)
+	uarm.write_servo_angle(3, servo['s4'], 1)
+
 	print 'Movement: Moved Once'
 
 
@@ -343,10 +344,10 @@ def attchCallback(attachStatus):
 	data_input = attachStatus.data
 	
 	if data_input.lower() == 'attach' :
-		uarm.uarmAttach()
+
 		print 'uArm: Attach'
 	elif data_input.lower() == 'detach':
-		uarm.uarmDetach()
+		uarm.detach_all_servos()
 		print 'uArm: Detach'
 	else:
 		pass
@@ -359,7 +360,7 @@ def moveToCallback(coords):
 	if y>0:
 		y = -y
 	z = coords.z
-	uarm.moveTo(x,y,z)
+	uarm.move_to_options(x, y, z, 0, 0, 2, 0, 0)
 	print 'Movement: Moved Once' 
 
 
@@ -372,9 +373,9 @@ def moveToTimeCallback(coordsAndT):
 	z = coordsAndT.z
 	time = coordsAndT.time
 	if time == 0:
-		uarm.moveToAtOnce(x,y,z)
+		uarm.move_to_options(x, y, z, 0, 0, 0, 0, 0)
 	else:
-		uarm.moveToWithTime(x,y,z,time)
+		uarm.move_to_options(x, y, z, 0, 0, time, 0, 0)
 
 	print 'Movement: Moved Once' 
 	pass
@@ -392,7 +393,7 @@ def moveToTimeAndS4Callback(coordsAndTS4):
 	s4 = coordsAndTS4.servo_4
 	if s4 > 180: s4 = 180
 	if s4 <0 : s4 =0
-	uarm.moveToWithS4(x,y,z,time,1,s4)
+	uarm.move_to_options(x, y, z, s4, 0, time, 0, 0)
 	print 'Movement: Moved Once' 
 	pass
 
@@ -471,7 +472,7 @@ def processFailedNum(failed_number):
 	if failed_number > 20 and failed_number < 26:
 		print 'ERROR: Input Connection Address Is Incorrect'
 	if failed_number == 20:
-		print 'uArm: Please Connect uArm first by typing connect /dev/xxx' 
+		print 'uArm: Please Connect uArm first '
 
 
 if __name__ == '__main__':
