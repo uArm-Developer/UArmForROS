@@ -3,9 +3,10 @@ This is the uarm ROS package designed by Joey Song ( joey@ufactory.cc / astainso
 ## 1.Installation
 ---
 ### 1.1 Pre-Requirements
-For using this package, the [UArmForPthon](https://github.com/uArm-Developer/UArmForPython) library **SHOULD** be installed first.
+For using this package, the [pyUarm](https://github.com/uArm-Developer/pyuarm) library **SHOULD** be installed first.
 
 Make sure your uarm has been calibrated in [THIS WAY](http://developer.ufactory.cc/quickstart/). Otherwise servos may be **BURNED** !!!
+
 ### 1.2 Package Download and Install
 Install ros package in your src folder of your Catkin workspace.
 ```bash
@@ -35,10 +36,8 @@ source ~/catkin_ws/devel/setup.bash
     
     First Connect Uarm before use
     ```bash 
-    rosrun uarm uarm_core.py connect /port_address  
-    # For example.
-    rosrun uarm uarm_core.py connect /dev/ttyUSB0
-    # If you do not put any argument, it will connect the default pin /dev/ttyUSB0
+    rosrun uarm uarm_core.py connect  //this will automatically find uarm
+
     ```
     **Step 2**: Control-Mode
     
@@ -234,7 +233,7 @@ source ~/catkin_ws/devel/setup.bash
 
 - **b)** Connect Uarm (same terminal)
     
-    `rosrun uarm uarm_core.py connect /dev/ttyUSB0` 
+    `rosrun uarm uarm_core.py connect` 
   
 - **c)** Monitor mode (same terminal) 
 
@@ -260,7 +259,7 @@ source ~/catkin_ws/devel/setup.bash
 -**Step 1**: In one terminal, connect uarm and set the listen mode as shown above
 ```
 roscore  #open another tab
-rosrun uarm uarm_core.py connect /dev/ttyUSB0    # connect uarm 
+rosrun uarm uarm_core.py connect  # connect uarm 
 e   # transfer to listen mode
 ```
 -**Step 2**: Luanch
