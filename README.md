@@ -3,26 +3,23 @@ This is the uarm ROS package designed by Joey Song ( joey@ufactory.cc / astainso
 ## 1.Installation
 ---
 ### 1.1 Pre-Requirements
-For using this package, the [pyUarm](https://github.com/uArm-Developer/pyuarm) library **SHOULD** be installed first.
-
-Make sure your uarm has been calibrated in [THIS WAY](http://developer.ufactory.cc/quickstart/). Otherwise servos may be **BURNED** !!!
+- For using this package, the [pyUarm](https://github.com/uArm-Developer/pyuarm) library **SHOULD** be installed first.
+  - Install from source or use ``pip install pyuarm``
+  - Upgrade the uArm Firmware using ``python -m pyuarm.tools.firmware_helper``
+- Make sure your uarm has been calibrated in [THIS WAY](http://developer.ufactory.cc/quickstart/). Otherwise servos may be **BURNED** !!!
 
 ### 1.2 Package Download and Install
 Install ros package in your src folder of your Catkin workspace.
 ```bash
-$ cd ~/catkin_ws/src
-$ git clone https://github.com/uArm-Developer/UArmForROS.git
-$ cd ~/catkin_ws
-$ catkin_make
+cd ~/catkin_ws/src
+git clone https://github.com/uArm-Developer/UArmForROS.git
+cd ~/catkin_ws
+catkin_make
 ```
-## 2. Source FIles
+## 2. Source Files
 ---
 Before you use any packages in uarmForROS, source all setup.bash file which allow you access to uarm package
  ```bash
-# if you are using indigo version of ROS
-source /opt/ros/indigo/setup.bash
-# use jade version
-source /opt/ros/jade/setup.bash
 # source setup.bash when you open new terminal
 source ~/catkin_ws/devel/setup.bash
 ```
