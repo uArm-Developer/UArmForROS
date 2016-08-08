@@ -15,7 +15,6 @@ from std_msgs.msg import Int32
 
 from math import sin
 import time
-from UArmForPython.uarm_python import Uarm
 from uarm.msg import Angles
 from uarm.msg import CoordsWithTime
 
