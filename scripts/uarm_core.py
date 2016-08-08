@@ -35,13 +35,12 @@ from uarm.msg import CoordsWithTS4
 
 # Read current Coords function
 def readCurrentCoords():
-	cc = uarm.read_coords(1)
-	print cc
-	print 'Current location is x: %2.2fcm, y: %2.2fcm, z: %2.2fcm.' %(cc[0],-1*float(cc[1]),-1*float(cc[2]))
+	cc = uarm.read_coordinate()
+	print 'Current location is x: %2.2fcm, y: %2.2fcm, z: %2.2fcm.' %(cc[0], float(cc[1]), float(cc[2]))
 
-	rospy.set_param('current_x',cc[0])
-	rospy.set_param('current_y',-1*float(cc[1]))
-	rospy.set_param('current_z',-1*float(cc[2]))
+	rospy.set_param('current_x', cc[0])
+	rospy.set_param('current_y', float(cc[1]))
+	rospy.set_param('current_z', float(cc[2]))
 
 # Read current Angles function
 def readCurrentAngles():
@@ -50,7 +49,6 @@ def readCurrentAngles():
 	ra['s2'] = uarm.read_servo_angle(1,1)
 	ra['s3'] = uarm.read_servo_angle(2,1)
 	ra['s4'] = uarm.read_servo_angle(3,1)
-	
 	
 	print 'Four Servo Angles: %2.2f, %2.2f, %2.2f and %2.2f degrees.' %(ra['s1'], ra['s2'],ra['s3'],ra['s4'])
 
@@ -173,6 +171,11 @@ def controlFcn():
 		elif commands == 'e': 
 			print 'Exit: Break the control fuction loop'
 			break;
+			
+		elif commands == 'exit': 
+			print 'Detach all servos and exit the program'
+			uarm.detach_all_servos()
+			sys.exit(0)
 
 		elif len(commands) == 0:
 			print 'len is 0'
@@ -184,6 +187,14 @@ def controlFcn():
 			if commands_split[0] == 'detach'or commands_split[0] == 'de':
 				if len(commands_split) == 1:
 					uarm.detach_all_servos()
+				else:
+					print 'no other commands should be input'
+				pass
+			
+			# Attach
+			if commands_split[0] == 'attach'or commands_split[0] == 'at':
+				if len(commands_split) == 1:
+					uarm.attach_all_servos()
 				else:
 					print 'no other commands should be input'
 				pass
@@ -233,7 +244,7 @@ def controlFcn():
 						elif a[i] <0:
 							a[i] = 0
 
-					uarm.write_servo_angle(0,a['s1'],1)
+					uarm.write_servo_angle(0, a['s1'], 1)
 					uarm.write_servo_angle(1, a['s2'], 1)
 					uarm.write_servo_angle(2, a['s3'], 1)
 					uarm.write_servo_angle(3, a['s4'], 1)
@@ -257,7 +268,7 @@ def controlFcn():
 					if y>0:
 						y = -y
 					z = float(commands_split[3])
-					uarm.move_to_options(x,y,z,0,0,2,0,0)
+					uarm.move_to(x, y, z, None, 0, 2, 0, 0)
 
 				elif len(commands_split) == 5:
 					x = float(commands_split[1])
@@ -266,7 +277,7 @@ def controlFcn():
 						y = -y
 					z = float(commands_split[3])
 					time = int(commands_split[4])
-					uarm.move_to_options(x, y, z, 0, 0, time, 0, 0)
+					uarm.move_to(x, y, z, None, 0, time, 0, 0)
 
 					pass
 
@@ -277,10 +288,10 @@ def controlFcn():
 						y = -y
 					z = float(commands_split[3])
 					time = int(commands_split[4])
-					servo_4 = int(commands_split[4])
+					servo_4 = int(commands_split[5])
 					if servo_4 > 180: servo_4 = 180
-					if servo_4 <0 : servo_4 =0
-					uarm.move_to_options(x, y, z, servo_4, 0, time, 0, 0)
+					if servo_4 < 0 : servo_4 = 0
+					uarm.move_to(x, y, z, servo_4, 0, time, 0, 0)
 					pass
 
 				else:
@@ -344,7 +355,7 @@ def attchCallback(attachStatus):
 	data_input = attachStatus.data
 	
 	if data_input.lower() == 'attach' :
-
+		uarm.attach_all_servos()
 		print 'uArm: Attach'
 	elif data_input.lower() == 'detach':
 		uarm.detach_all_servos()
@@ -360,7 +371,7 @@ def moveToCallback(coords):
 	if y>0:
 		y = -y
 	z = coords.z
-	uarm.move_to_options(x, y, z, 0, 0, 2, 0, 0)
+	uarm.move_to(x, y, z, None, 0, 2, 0, 0)
 	print 'Movement: Moved Once' 
 
 
@@ -373,9 +384,9 @@ def moveToTimeCallback(coordsAndT):
 	z = coordsAndT.z
 	time = coordsAndT.time
 	if time == 0:
-		uarm.move_to_options(x, y, z, 0, 0, 0, 0, 0)
+		uarm.move_to(x, y, z, None, 0, 0, 0, 0)
 	else:
-		uarm.move_to_options(x, y, z, 0, 0, time, 0, 0)
+		uarm.move_to(x, y, z, None, 0, time, 0, 0)
 
 	print 'Movement: Moved Once' 
 	pass
@@ -393,7 +404,7 @@ def moveToTimeAndS4Callback(coordsAndTS4):
 	s4 = coordsAndTS4.servo_4
 	if s4 > 180: s4 = 180
 	if s4 <0 : s4 =0
-	uarm.move_to_options(x, y, z, s4, 0, time, 0, 0)
+	uarm.move_to(x, y, z, s4, 0, time, 0, 0)
 	print 'Movement: Moved Once' 
 	pass
 
