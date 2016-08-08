@@ -3,7 +3,7 @@ This is the uarm ROS package designed by Joey Song ( joey@ufactory.cc / astainso
 ## 1.Installation
 ---
 ### 1.1 Pre-Requirements
-Connect uArm to computer and upgrade your uArmProtocol Firmware)
+Connect uArm to computer and upgrade your uArmProtocol Firmware
 ```bash
 $ python -m pyuarm.tools.firmware_helper
 ```
@@ -42,12 +42,13 @@ source ~/catkin_ws/devel/setup.bash
     **Step 1**: Connect Uarm
     Open ROS firstly
     ```bash 
-    roscore
+    roscore  // set up ROS enviroment
     ```
-    Open a another terminal and connect Uarm before use
+    Open another terminal and connect Uarm before use
     ```bash 
-    rosrun uarm uarm_core.py connect  //this will automatically find uarm
+    rosrun uarm uarm_core.py connect  // this will automatically find uarm
     ```
+    
     **Step 2**: Control-Mode
     
     Once connect uarm, you can use commands to control. Input `h` to see all the commands
