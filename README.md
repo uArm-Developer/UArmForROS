@@ -3,8 +3,14 @@ This is the uarm ROS package designed by Joey Song ( joey@ufactory.cc / astainso
 ## 1.Installation
 ---
 ### 1.1 Pre-Requirements
+Connect uArm to computer and upgrade your uArmProtocol Firmware)
+```bash
+$ python -m pyuarm.tools.firmware_helper
+```
 For using this package, the [pyUarm](https://github.com/uArm-Developer/pyuarm) library **SHOULD** be installed first.
-
+```bash
+$ pip install pyuarm
+```
 Make sure your uarm has been calibrated in [THIS WAY](http://developer.ufactory.cc/quickstart/). Otherwise servos may be **BURNED** !!!
 
 ### 1.2 Package Download and Install
@@ -19,10 +25,11 @@ $ catkin_make
 ---
 Before you use any packages in uarmForROS, source all setup.bash file which allow you access to uarm package
  ```bash
-# if you are using indigo version of ROS
-source /opt/ros/indigo/setup.bash
-# use jade version
-source /opt/ros/jade/setup.bash
+# Using corresponding version of ROS
+source /opt/ros/[Ros_version]/setup.bash
+# for example, if you are using kinetic version fo Ros
+source /opt/ros/kinetic/setup.bash
+
 # source setup.bash when you open new terminal
 source ~/catkin_ws/devel/setup.bash
 ```
@@ -33,11 +40,13 @@ source ~/catkin_ws/devel/setup.bash
 - `uarm_core.py` is the main node. Run this node before anything else. This node has two main modes: **Control-Mode** and **Monitor-Mode**. **Control-Mode** is used to control uarm directly in this node. **Monitor-mode** is to subscrib/listen to all topics which can be used to control uarm through these nodes. This node will automatically load **Control-Mode** first. 
 
     **Step 1**: Connect Uarm
-    
-    First Connect Uarm before use
+    Open ROS firstly
+    ```bash 
+    roscore
+    ```
+    Open a another terminal and connect Uarm before use
     ```bash 
     rosrun uarm uarm_core.py connect  //this will automatically find uarm
-
     ```
     **Step 2**: Control-Mode
     
@@ -48,7 +57,7 @@ source ~/catkin_ws/devel/setup.bash
     # For example: read current x,y,z (use cc in short for currentCoords)
     Input Commands (Input h to see all commands):  currentCoords # or cc
     # For example: move uarm x,y,z (use mt in short for moveTo)
-    Input Commands (Input h to see all commands):  moveTo 12 -12 12
+    Input Commands (Input h to see all commands):  mt 12 -12 12
     ```
     Input `e` to exit control-mode and get into Monitor mode
     
@@ -64,7 +73,7 @@ source ~/catkin_ws/devel/setup.bash
     
 - `uarm_status_node.py` is the node which can control the attach-status or detach-status of uarm. 
     
-    Use this node in the **monitor-mode** of `uarm_core.py` node
+    Open another terminal, and use this node in the **monitor-mode** of `uarm_core.py` node
     ```bash
     # attach uarm
     rosrun uarm uarm_status_node.py attach
@@ -132,10 +141,10 @@ source ~/catkin_ws/devel/setup.bash
     ```bash
     # move to x,y,z
     rosrun uarm move_to_node.py 12 -12 12
-    # move to x,y,z,time (point 12 -12 12 in 2 second)
+    # move to x,y,z,time (point 12 -12 12 in 2 seconds)
     rosrun uarm move_to_node.py 12 -12 12 2
-    # rmove to x,y,z,time,servo_4 angle (servo 4 angle is 54)
-    rosrun uarm move_to_node.py 112 -12 12 2 54
+    # move to x,y,z,time,servo_4 angle (servo_4 angle is 54)
+    rosrun uarm move_to_node.py 12 -12 12 2 54
     ```
 ### 3.2 Topics
 
@@ -258,32 +267,36 @@ source ~/catkin_ws/devel/setup.bash
 ### 5.2 Launch and Run
 -**Step 1**: In one terminal, connect uarm and set the listen mode as shown above
 ```
-roscore  #open another tab
+roscore  # open ROS
+```
+In the second terminal, connect uarm
+```
 rosrun uarm uarm_core.py connect  # connect uarm 
 e   # transfer to listen mode
 ```
 -**Step 2**: Luanch
  
-a) For visualization function, in second termianl, run
+a) For visualization function, in third termianl, run
 
     roslaunch uarm display.launch
   
 <img src="http://developer.ufactory.cc/images/visualization-visual.png" alt="unpack" style="width: 640px;"/>
 
-b) For control function, in second termianl, run
+b) Or for control function, in the third termianl, run
 
     roslaunch uarm control.launch
 <img src="http://developer.ufactory.cc/images/visualization-control.png" alt="unpack" style="width: 640px;"/>
     
 
 -**Step 3**: Display:
-Open rviz to view robot
+Open rviz to view robot in the fourth terminal
 ```
-rosrun rviz rviz  # set Cell Size to 0.1
+rosrun rviz rviz
 ```
 For both functions, import robot model: 
 
 ```
+set Cell Size -> 0.1
 Add  -> RobotModel
 set Fixed Frame -> base
 ```
