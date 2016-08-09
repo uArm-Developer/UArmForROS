@@ -1,6 +1,11 @@
 # UArmForROS
 This is the uarm ROS package designed by Joey Song ( joey@ufactory.cc / astainsong@gmail.com)
-## 1.Installation
+
+## 0. Quickstart and Execution
+---
+<img src="http://developer.ufactory.cc/images/visualization-visual.png" alt="unpack" style="width: 640px;”/>
+
+## 1. Installation
 ---
 ### 1.1 Pre-Requirements
 Connect uArm to computer and upgrade your uArmProtocol Firmware
@@ -34,7 +39,7 @@ source /opt/ros/kinetic/setup.bash
 source ~/catkin_ws/devel/setup.bash
 ```
 
-## 3.Package Modules
+## 3. Package Modules
 ---
 ### 3.1 Nodes
 - `uarm_core.py` is the main node. Run this node before anything else. This node has two main modes: **Control-Mode** and **Monitor-Mode**. **Control-Mode** is used to control uarm directly in this node. **Monitor-mode** is to subscrib/listen to all topics which can be used to control uarm through these nodes. This node will automatically load **Control-Mode** first. 
