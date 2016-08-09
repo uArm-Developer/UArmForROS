@@ -1,6 +1,11 @@
 # UArmForROS
 This is the uarm ROS package designed by Joey Song ( joey@ufactory.cc / astainsong@gmail.com)
 
+## 0. Quickstart and Execution
+---
+Three ways to control uArm movements
+![](http://obmqyor62.bkt.clouddn.com/ROS_instruction.png)
+
 ## 1. Installation
 ---
 ### 1.1 Pre-Requirements
@@ -13,6 +18,11 @@ For using this package, the [pyUarm](https://github.com/uArm-Developer/pyuarm) l
 $ pip install pyuarm
 ```
 Make sure your uarm has been calibrated in [THIS WAY](http://developer.ufactory.cc/quickstart/). Otherwise servos may be **BURNED** !!!
+Then get USB permission to access uArm
+```bash
+$ cd /etc/udev/rules.d
+```
+Creat a file `ttyUSB.rules` and put the following line: `KERNEL=="ttyUSB*", MODE="0666"`. Save the file and disconnect uArm.
 
 ### 1.2 Package Download and Install
 Install ros package in your src folder of your Catkin workspace.
@@ -28,32 +38,34 @@ Before you use any packages in uarmForROS, source all setup.bash file which allo
  ```bash
 # Using corresponding version of ROS
 source /opt/ros/[Ros_version]/setup.bash
-# for example, if you are using kinetic version fo Ros
+# For example, if you are using kinetic version fo Ros
 source /opt/ros/kinetic/setup.bash
-
-# source setup.bash when you open new terminal
+# Source setup.bash when you open new terminal
 source ~/catkin_ws/devel/setup.bash
+
+# System configure ROS environment variables automatically every time you open terminal
+echo "source /opt/ros/[Ros_version]/setup.bash" >> ~/.bashrc
+echo "source ~/catkin_ws/devel/setup.bash" >> ~/.bashrc
 ```
 
 ## 3. Package Modules
 ---
 ### 3.1 Nodes
 - `uarm_core.py` is the main node. Run this node before anything else. This node has two main modes: **Control-Mode** and **Monitor-Mode**. **Control-Mode** is used to control uarm directly in this node. **Monitor-mode** is to subscrib/listen to all topics which can be used to control uarm through these nodes. This node will automatically load **Control-Mode** first. 
-
-    **Step 1**: Connect Uarm
     
-    Open ROS firstly
+    **Step 1**: Connect uArm
+    Set up ROS enviroment in one terminal at first
     ```bash 
-    roscore  // set up ROS enviroment
+    roscore
     ```
-    Open another terminal and connect Uarm before use
+    Open another terminal and connect uArm before use
     ```bash 
     rosrun uarm uarm_core.py connect  // this will find uarm automatically
     ```
     
     **Step 2**: Control-Mode
     
-    Once connect uarm, you can use commands to control. Input `h` to see all the commands
+    Once connect uArm, you can use commands to control. Input `h` to see all the commands
     ```bash 
     # For example: attach uarm (use at in short for attach)
     Input Commands (Input h to see all commands):  attach # or at
@@ -74,7 +86,7 @@ source ~/catkin_ws/devel/setup.bash
     =======================================================
     ```
     
-- `uarm_status_node.py` is the node which can control the attach-status or detach-status of uarm. 
+- `uarm_status_node.py` is the node which can control the attach-status or detach-status of uArm. 
     
     Open another terminal, and use this node in the **monitor-mode** of `uarm_core.py` node
     ```bash
@@ -244,13 +256,13 @@ source ~/catkin_ws/devel/setup.bash
 - Control -- control.launch: This function will allow you control the end-effector movement in 3 DOF along x,y,z axis.
 
 ### 4.2 Launch and Run
--**Step 1**: Connect uarm in ROS enviroment
+-**Step 1**: Connect uArm in ROS enviroment
 ```
 roscore    // set up ROS enviroment in one terminal
 ```
-In the second terminal, connect uarm and set the listen mode as shown above
+In the second terminal, connect uArm and set the listen mode as shown above
 ```
-rosrun uarm uarm_core.py connect  // connect uarm 
+rosrun uarm uarm_core.py connect  // connect uArm 
 e                                 // transfer to listen mode
 ```
 -**Step 2**: Luanch
@@ -283,10 +295,5 @@ b) For control function,
 Add -> InteractiveMarker                  // click "add" and choose "InteractiveMarkers"
 Update Topic -> /uarm_controller/update   // change "Update topic" in "InteractiveMarkers"
 ```
-Drag 3 pairs of arrows to control uarm along x, y, z axis.
-
-## 5. Quickstart and Execution
----
-
-![](http://obmqyor62.bkt.clouddn.com/ROS_instruction.png)
+Drag 3 pairs of arrows to control uArm along x, y, z axis.
 
