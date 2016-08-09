@@ -288,5 +288,5 @@ Drag 3 pairs of arrows to control uarm along x, y, z axis.
 ## 5. Quickstart and Execution
 ---
 
-![Instruction](img src="https://drive.google.com/open?id=0B2QDcZIp5s3qdVJoUXJTRFFRa2s)
+![](https://drive.google.com/file/d/0B2QDcZIp5s3qSmloUF9WMmE4bHM/view?usp=sharing)
 
