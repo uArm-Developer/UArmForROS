@@ -287,7 +287,7 @@ Drag 3 pairs of arrows to control uarm along x, y, z axis.
 
 ## 5. Quickstart and Execution
 ---
-<img src="http://developer.ufactory.cc/images/visualization-visual.png" alt="unpack" style="width: 640px;”/>
+<img src="https://drive.google.com/open?id=0B2QDcZIp5s3qdVJoUXJTRFFRa2s" alt="unpack" style="width: 640px;”/>
 
 
 
