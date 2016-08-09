@@ -1,11 +1,6 @@
 # UArmForROS
 This is the uarm ROS package designed by Joey Song ( joey@ufactory.cc / astainsong@gmail.com)
 
-## 0. Quickstart and Execution
----
-<img src="http://developer.ufactory.cc/images/visualization-visual.png" alt="unpack" style="width: 640px;”/>
-
-
 ## 1. Installation
 ---
 ### 1.1 Pre-Requirements
@@ -290,6 +285,9 @@ Update Topic -> /uarm_controller/update   // change "Update topic" in "Interacti
 ```
 Drag 3 pairs of arrows to control uarm along x, y, z axis.
 
+## 5. Quickstart and Execution
+---
+<img src="http://developer.ufactory.cc/images/visualization-visual.png" alt="unpack" style="width: 640px;”/>
 
 
 
