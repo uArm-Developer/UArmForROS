@@ -272,7 +272,7 @@ rosrun rviz rviz
 For both functions, import robot model in "Displays" panel: 
 
 ```
-Add  -> RobotModel          // click "add" and choose "RobotModel"
+Add -> RobotModel           // click "add" and choose "RobotModel"
 set Cell Size -> 0.1        // change "Cell Size" to 0.1 in "Grid"
 set Fixed Frame -> base     // change "Fixed Frame" to base in "Global Options"
 ```
@@ -289,9 +289,5 @@ Drag 3 pairs of arrows to control uarm along x, y, z axis.
 ## 5. Quickstart and Execution
 ---
 
-<img src="https://drive.google.com/open?id=0B2QDcZIp5s3qdVJoUXJTRFFRa2s" alt="unpack" style="width: 640px;”/>
-<img src="http://developer.ufactory.cc/images/visualization-control.png" alt="unpack" style="width: 640px;”/>
-
-
-
+![Instruction](img src="https://drive.google.com/open?id=0B2QDcZIp5s3qdVJoUXJTRFFRa2s)
 
