@@ -47,7 +47,7 @@ source ~/catkin_ws/devel/setup.bash
     ```
     Open another terminal and connect Uarm before use
     ```bash 
-    rosrun uarm uarm_core.py connect  // this will automatically find uarm
+    rosrun uarm uarm_core.py connect  // this will find uarm automatically
     ```
     
     **Step 2**: Control-Mode
@@ -235,46 +235,22 @@ source ~/catkin_ws/devel/setup.bash
     uint8: servo_4
     ```
 
-## 4. Quickstart and Execution
+## 4. Visualization in RViz
 ---
-
-- **a)** Source Setup
-    
-    `source ~/catkin_ws/devel/setup.bash`
-
-- **b)** Connect Uarm (same terminal)
-    
-    `rosrun uarm uarm_core.py connect` 
-  
-- **c)** Monitor mode (same terminal) 
-
-    `Input Commands (Input h to see all commands): e`
-
-- **d.1)** Control through **Topics** (new terminal) 
-
-    `rostopic pub /uarm_status std_msgs/String attach`
-- **d.2)** Control through **Nodes** (new terminal, source first)
-
-    -`source ~/catkin_ws/devel/setup.bash`
-    
-    -`rosrun uarm uarm_status_node.py detach`
-
-## 5. Visualization in RViz
----
-### 5.1 Functions
+### 4.1 Functions
 
 - Visualization -- display.launch: This function will display robot movement in realtime when you manually move uArm
 - Control -- control.launch: This function will allow you control the end-effector movement in 3 DOF along x,y,z axis.
 
-### 5.2 Launch and Run
--**Step 1**: Set up ROS enviroment and connect uarm
+### 4.2 Launch and Run
+-**Step 1**: Connect uarm in ROS enviroment
 ```
-roscore  // set up ROS enviroment in one terminal
+roscore    // set up ROS enviroment in one terminal
 ```
 In the second terminal, connect uarm and set the listen mode as shown above
 ```
 rosrun uarm uarm_core.py connect  // connect uarm 
-e        // transfer to listen mode
+e                                 // transfer to listen mode
 ```
 -**Step 2**: Luanch
  
@@ -286,7 +262,7 @@ b) Or for control function, in the third termianl, run
 
     roslaunch uarm control.launch
 
--**Step 3**: Display:
+-**Step 3**: Display and control:
 Open rviz to view robot in the fourth terminal
 ```
 rosrun rviz rviz
@@ -303,7 +279,7 @@ a) For visualization function, right now a robot will display in the main window
 b) For control function, 
 
 ```
-Add -> InteractiveMarker    // click "add" and choose "InteractiveMarkers"
+Add -> InteractiveMarker                  // click "add" and choose "InteractiveMarkers"
 Update Topic -> /uarm_controller/update   // change "Update topic" in "InteractiveMarkers"
 ```
 Drag 3 pairs of arrows to control uarm along x, y, z axis.
