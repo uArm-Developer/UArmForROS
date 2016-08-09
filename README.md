@@ -4,12 +4,18 @@ This is the uarm ROS package designed by Joey Song ( joey@ufactory.cc / astainso
 ## 0. Quickstart and Execution
 ---
 Three ways to control uArm movements
-![](http://obmqyor62.bkt.clouddn.com/ROS_instruction.png)
+![](http://obmqyor62.bkt.clouddn.com/ROS_Quickstart.jpg)
 
 ## 1. Installation
 ---
 ### 1.1 Pre-Requirements
-Connect uArm to computer and upgrade your uArmProtocol Firmware
+Connect uArm and get USB permission to access uArm
+```bash
+$ cd /etc/udev/rules.d
+```
+Creat a file `ttyUSB.rules` and put the following line: `KERNEL=="ttyUSB*", MODE="0666"`. Save the file and disconnect uArm.
+
+Reconnect uArm to computer and upgrade your uArmProtocol Firmware
 ```bash
 $ python -m pyuarm.tools.firmware_helper
 ```
@@ -17,12 +23,6 @@ For using this package, the [pyUarm](https://github.com/uArm-Developer/pyuarm) l
 ```bash
 $ pip install pyuarm
 ```
-Make sure your uarm has been calibrated in [THIS WAY](http://developer.ufactory.cc/quickstart/). Otherwise servos may be **BURNED** !!!
-Then get USB permission to access uArm
-```bash
-$ cd /etc/udev/rules.d
-```
-Creat a file `ttyUSB.rules` and put the following line: `KERNEL=="ttyUSB*", MODE="0666"`. Save the file and disconnect uArm.
 
 ### 1.2 Package Download and Install
 Install ros package in your src folder of your Catkin workspace.
