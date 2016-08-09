@@ -19,7 +19,7 @@ Reconnect uArm to computer and upgrade your uArmProtocol Firmware
 ```bash
 $ python -m pyuarm.tools.firmware_helper
 ```
-For using this package, the [pyUarm](https://github.com/uArm-Developer/pyuarm) library **SHOULD** be installed first.
+For using this package, the [pyUarm](https://github.com/uArm-Developer/pyuarm) library **SHOULD** be installed at first.
 ```bash
 $ pip install pyuarm
 ```
@@ -54,11 +54,12 @@ echo "source ~/catkin_ws/devel/setup.bash" >> ~/.bashrc
 - `uarm_core.py` is the main node. Run this node before anything else. This node has two main modes: **Control-Mode** and **Monitor-Mode**. **Control-Mode** is used to control uarm directly in this node. **Monitor-mode** is to subscrib/listen to all topics which can be used to control uarm through these nodes. This node will automatically load **Control-Mode** first. 
     
     **Step 1**: Connect uArm
+    
     Set up ROS enviroment in one terminal at first
     ```bash 
     roscore
     ```
-    Open another terminal and connect uArm before use
+    Open another terminal to connect uArm before use
     ```bash 
     rosrun uarm uarm_core.py connect  // this will find uarm automatically
     ```
@@ -252,13 +253,13 @@ echo "source ~/catkin_ws/devel/setup.bash" >> ~/.bashrc
 ---
 ### 4.1 Functions
 
-- Visualization -- display.launch: This function will display robot movement in realtime when you manually move uArm
+- Display -- display.launch: This function will display robot movement in realtime when you manually move uArm
 - Control -- control.launch: This function will allow you control the end-effector movement in 3 DOF along x,y,z axis.
 
 ### 4.2 Launch and Run
--**Step 1**: Connect uArm in ROS enviroment
+-**Step 1**: Set up ROS enviroment in one terminal
 ```
-roscore    // set up ROS enviroment in one terminal
+roscore
 ```
 In the second terminal, connect uArm and set the listen mode as shown above
 ```
@@ -287,9 +288,9 @@ Add -> RobotModel           // click "add" and choose "RobotModel"
 set Cell Size -> 0.1        // change "Cell Size" to 0.1 in "Grid"
 set Fixed Frame -> base     // change "Fixed Frame" to base in "Global Options"
 ```
-a) For visualization function, right now a robot will display in the main window
+a) For Display function, right now a robot will display in the main window
 
-b) For control function, 
+b) For Control function, 
 
 ```
 Add -> InteractiveMarker                  // click "add" and choose "InteractiveMarkers"
