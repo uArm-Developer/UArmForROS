@@ -40,6 +40,7 @@ source ~/catkin_ws/devel/setup.bash
 - `uarm_core.py` is the main node. Run this node before anything else. This node has two main modes: **Control-Mode** and **Monitor-Mode**. **Control-Mode** is used to control uarm directly in this node. **Monitor-mode** is to subscrib/listen to all topics which can be used to control uarm through these nodes. This node will automatically load **Control-Mode** first. 
 
     **Step 1**: Connect Uarm
+    
     Open ROS firstly
     ```bash 
     roscore  // set up ROS enviroment
