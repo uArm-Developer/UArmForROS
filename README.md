@@ -258,7 +258,6 @@ e                                 // transfer to listen mode
 a) For visualization function, in the third termianl, run
 
     roslaunch uarm display.launch
-<img src="http://developer.ufactory.cc/images/visualization-control.png" alt="unpack" style="width: 640px;”/>
 
 b) Or for control function, in the third termianl, run
 
