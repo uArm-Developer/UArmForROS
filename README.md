@@ -4,7 +4,7 @@ This is the uarm ROS package designed by Joey Song ( joey@ufactory.cc / astainso
 ## 0. Quickstart and Execution
 ---
 Three ways to control uArm movements
-![](http://obmqyor62.bkt.clouddn.com/ROS_Quickstart.jpg)
+![](http://obmqyor62.bkt.clouddn.com/ROSL1.jpg)
 
 ## 1. Installation
 ---
