@@ -267,11 +267,11 @@ source ~/catkin_ws/devel/setup.bash
 - Control -- control.launch: This function will allow you control the end-effector movement in 3 DOF along x,y,z axis.
 
 ### 5.2 Launch and Run
--**Step 1**: In one terminal, connect uarm and set the listen mode as shown above
+-**Step 1**: Set up ROS enviroment and connect uarm
 ```
-roscore  // set up ROS enviroment
+roscore  // set up ROS enviroment in one terminal
 ```
-In the second terminal, connect uarm
+In the second terminal, connect uarm and set the listen mode as shown above
 ```
 rosrun uarm uarm_core.py connect  // connect uarm 
 e        // transfer to listen mode
@@ -281,14 +281,10 @@ e        // transfer to listen mode
 a) For visualization function, in the third termianl, run
 
     roslaunch uarm display.launch
-  
-<img src="http://developer.ufactory.cc/images/visualization-visual.png" alt="unpack" style="width: 640px;"/>
 
 b) Or for control function, in the third termianl, run
 
     roslaunch uarm control.launch
-<img src="http://developer.ufactory.cc/images/visualization-control.png" alt="unpack" style="width: 640px;"/>
-    
 
 -**Step 3**: Display:
 Open rviz to view robot in the fourth terminal
@@ -307,10 +303,10 @@ a) For visualization function, right now a robot will display in the main window
 b) For control function, 
 
 ```
-Add -> InteractiveMarker
-Update Topic -> /uarm_controller/update
+Add -> InteractiveMarker    // click "add" and choose "InteractiveMarkers"
+Update Topic -> /uarm_controller/update   // change "Update topic" in "InteractiveMarkers"
 ```
-Drag 3 pairs of arrows to control uarm along x,y,z axis.
+Drag 3 pairs of arrows to control uarm along x, y, z axis.
 
 
 
