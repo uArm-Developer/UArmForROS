@@ -269,16 +269,16 @@ source ~/catkin_ws/devel/setup.bash
 ### 5.2 Launch and Run
 -**Step 1**: In one terminal, connect uarm and set the listen mode as shown above
 ```
-roscore  # open ROS
+roscore  // set up ROS enviroment
 ```
 In the second terminal, connect uarm
 ```
-rosrun uarm uarm_core.py connect  # connect uarm 
-e   # transfer to listen mode
+rosrun uarm uarm_core.py connect  // connect uarm 
+e        // transfer to listen mode
 ```
 -**Step 2**: Luanch
  
-a) For visualization function, in third termianl, run
+a) For visualization function, in the third termianl, run
 
     roslaunch uarm display.launch
   
@@ -295,12 +295,12 @@ Open rviz to view robot in the fourth terminal
 ```
 rosrun rviz rviz
 ```
-For both functions, import robot model: 
+For both functions, import robot model in "Displays" panel: 
 
 ```
-set Cell Size -> 0.1
-Add  -> RobotModel
-set Fixed Frame -> base
+Add  -> RobotModel          // click "add" and choose "RobotModel"
+set Cell Size -> 0.1        // change "Cell Size" to 0.1 in "Grid"
+set Fixed Frame -> base     // change "Fixed Frame" to base in "Global Options"
 ```
 a) For visualization function, right now a robot will display in the main window
 
