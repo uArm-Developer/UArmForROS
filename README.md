@@ -55,7 +55,7 @@ echo "source ~/catkin_ws/devel/setup.bash" >> ~/.bashrc
     
     **Step 1**: Connect uArm
     
-    Set up ROS enviroment in one terminal at first
+    Set up ROS enviroment at first
     ```bash 
     roscore
     ```
@@ -73,7 +73,7 @@ echo "source ~/catkin_ws/devel/setup.bash" >> ~/.bashrc
     # For example: read current x,y,z (use cc in short for currentCoords)
     Input Commands (Input h to see all commands):  currentCoords # or cc
     # For example: move uarm x,y,z (use mt in short for moveTo)
-    Input Commands (Input h to see all commands):  mt 12 -12 12
+    Input Commands (Input h to see all commands):  moveTo 12 -12 12
     ```
     Input `e` to exit control-mode and get into Monitor mode
     
