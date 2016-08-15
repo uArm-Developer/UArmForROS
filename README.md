@@ -13,19 +13,19 @@ Connect uArm and get USB permission to access uArm
 ```bash
 $ cd /etc/udev/rules.d
 ```
-Creat a file `ttyUSB.rules` and put the following line: `KERNEL=="ttyUSB*", MODE="0666"`. Save the file and disconnect uArm.
+Creat a file `ttyUSB.rules` and put the following line: `KERNEL=="ttyUSB*", MODE="0666"`. Save the file and disconnect uArm. (if you already have the permission to access USB, you can skip this step)
 
-Reconnect uArm to computer and upgrade your uArmProtocol Firmware
-```bash
-$ python -m pyuarm.tools.firmware_helper
-```
 For using this package, the [pyUarm](https://github.com/uArm-Developer/pyuarm) library **SHOULD** be installed at first.
 ```bash
 $ pip install pyuarm
 ```
+Reconnect uArm to computer and upgrade your uArmProtocol Firmware
+```bash
+$ python -m pyuarm.tools.firmware_helper
+```
 
 ### 1.2 Package Download and Install
-Install ros package in your src folder of your Catkin workspace.
+Install ros package in your src folder of your [Catkin workspace](http://wiki.ros.org/ROS/Tutorials/InstallingandConfiguringROSEnvironment).
 ```bash
 $ cd ~/catkin_ws/src
 $ git clone https://github.com/uArm-Developer/UArmForROS.git
@@ -34,17 +34,18 @@ $ catkin_make
 ```
 ## 2. Source FIles
 ---
-Before you use any packages in uarmForROS, source all setup.bash file which allow you access to uarm package
+Before you use any packages in uarmForROS, source all setup.bash files which allow you to access uarm package
  ```bash
-# Using corresponding version of ROS
-source /opt/ros/[Ros_version]/setup.bash
-# For example, if you are using kinetic version fo Ros
+# Using your version of ROS
+source /opt/ros/[ROS_version]/setup.bash
+# For example, if you are using kinetic version of ROS
 source /opt/ros/kinetic/setup.bash
-# Source setup.bash when you open new terminal
+
+# Source setup.bash when you open a new terminal
 source ~/catkin_ws/devel/setup.bash
 
 # System configure ROS environment variables automatically every time you open terminal
-echo "source /opt/ros/[Ros_version]/setup.bash" >> ~/.bashrc
+echo "source /opt/ros/[ROS_version]/setup.bash" >> ~/.bashrc
 echo "source ~/catkin_ws/devel/setup.bash" >> ~/.bashrc
 ```
 
@@ -59,7 +60,7 @@ echo "source ~/catkin_ws/devel/setup.bash" >> ~/.bashrc
     ```bash 
     roscore
     ```
-    Open another terminal to connect uArm before use
+    Open another terminal to connect uArm before use. (Remember to source setup.bash as above in this new terminal before connection)
     ```bash 
     rosrun uarm uarm_core.py connect  // this will find uarm automatically
     ```
@@ -249,6 +250,7 @@ echo "source ~/catkin_ws/devel/setup.bash" >> ~/.bashrc
     uint8: servo_4
     ```
 
+
 ## 4. Visualization in RViz
 ---
 ### 4.1 Functions
@@ -257,31 +259,31 @@ echo "source ~/catkin_ws/devel/setup.bash" >> ~/.bashrc
 - Control -- control.launch: This function will allow you control the end-effector movement in 3 DOF along x,y,z axis.
 
 ### 4.2 Launch and Run
--**Step 1**: Set up ROS enviroment in one terminal
+-**Step 1**: Set up ROS enviroment in **one** terminal
 ```
 roscore
 ```
-In the second terminal, connect uArm and set the listen mode as shown above
+In the **second** terminal, connect uArm and set the listen mode as shown above
 ```
-rosrun uarm uarm_core.py connect  // connect uArm 
-e                                 // transfer to listen mode
+rosrun uarm uarm_core.py connect  // connect uArm
+e                                 // transfer to monitor mode
 ```
 -**Step 2**: Luanch
  
-a) For visualization function, in the third termianl, run
+a) For visualization function, in the **third** termianl, run
 
     roslaunch uarm display.launch
 
-b) Or for control function, in the third termianl, run
+b) Or for control function, in the **third** termianl, run
 
     roslaunch uarm control.launch
 
 -**Step 3**: Display and control:
-Open rviz to view robot in the fourth terminal
+Open rviz to view robot in the **fourth** terminal
 ```
 rosrun rviz rviz
 ```
-For both functions, import robot model in "Displays" panel: 
+For both functions, import robot model in "Displays" panel on the left: 
 
 ```
 Add -> RobotModel           // click "add" and choose "RobotModel"
@@ -290,7 +292,7 @@ set Fixed Frame -> base     // change "Fixed Frame" to base in "Global Options"
 ```
 a) For Display function, right now a robot will display in the main window
 
-b) For Control function, 
+b) For Control function, stop Display function and set
 
 ```
 Add -> InteractiveMarker                  // click "add" and choose "InteractiveMarkers"
