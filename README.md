@@ -4,7 +4,7 @@ This is the uarm ROS package designed by Joey Song ( joey@ufactory.cc / astainso
 ## 0. Quickstart and Execution
 ---
 Three ways to control uArm movements
-![](http://obmqyor62.bkt.clouddn.com/ROSL2.jpg)
+![](http://obmqyor62.bkt.clouddn.com/ROS_QuickStart.jpg)
 
 ## 1. Installation
 ---
@@ -36,17 +36,15 @@ $ catkin_make
 ---
 Before you use any packages in uarmForROS, source all setup.bash files which allow you to access uarm package
  ```bash
-# Using your version of ROS
-source /opt/ros/[ROS_version]/setup.bash
-# For example, if you are using kinetic version of ROS
-source /opt/ros/kinetic/setup.bash
 
-# Source setup.bash when you open a new terminal
-source ~/catkin_ws/devel/setup.bash
-
-# System configure ROS environment variables automatically every time you open terminal
+# System configure ROS environment variables automatically every time you open a shall
 echo "source /opt/ros/[ROS_version]/setup.bash" >> ~/.bashrc
+# For example, if you are using kinetic version of ROS
+echo "source /opt/ros/kinetic/setup.bash" >> ~/.bashrc
+
+# Source setup.bash
 echo "source ~/catkin_ws/devel/setup.bash" >> ~/.bashrc
+source ~/.bashrc
 ```
 
 ## 3. Package Modules
@@ -60,7 +58,7 @@ echo "source ~/catkin_ws/devel/setup.bash" >> ~/.bashrc
     ```bash 
     roscore
     ```
-    Open another terminal to connect uArm before use. (Remember to source setup.bash as above in this new terminal before connection)
+    Open another shall to connect uArm before use.
     ```bash 
     rosrun uarm uarm_core.py connect  // this will find uarm automatically
     ```
@@ -90,7 +88,7 @@ echo "source ~/catkin_ws/devel/setup.bash" >> ~/.bashrc
     
 - `uarm_status_node.py` is the node which can control the attach-status or detach-status of uArm. 
     
-    Open another terminal, and use this node in the **monitor-mode** of `uarm_core.py` node
+    Open another shall, and use this node in the **monitor-mode** of `uarm_core.py` node
     ```bash
     # attach uarm
     rosrun uarm uarm_status_node.py attach
@@ -259,27 +257,27 @@ echo "source ~/catkin_ws/devel/setup.bash" >> ~/.bashrc
 - Control -- control.launch: This function will allow you control the end-effector movement in 3 DOF along x,y,z axis.
 
 ### 4.2 Launch and Run
--**Step 1**: Set up ROS enviroment in **one** terminal
+-**Step 1**: Set up ROS enviroment in **one** shall
 ```
 roscore
 ```
-In the **second** terminal, connect uArm and set the listen mode as shown above
+In the **second** shall, connect uArm and set the listen mode as shown above
 ```
 rosrun uarm uarm_core.py connect  // connect uArm
 e                                 // transfer to monitor mode
 ```
 -**Step 2**: Luanch
  
-a) For visualization function, in the **third** termianl, run
+a) For visualization function, in the **third** shall, run
 
     roslaunch uarm display.launch
 
-b) Or for control function, in the **third** termianl, run
+b) Or for control function, in the **third** shall, run
 
     roslaunch uarm control.launch
 
 -**Step 3**: Display and control:
-Open rviz to view robot in the **fourth** terminal
+Open rviz to view robot in the **fourth** shall
 ```
 rosrun rviz rviz
 ```
