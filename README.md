@@ -13,15 +13,15 @@ Connect uArm and get USB permission to access uArm
 ```bash
 $ cd /etc/udev/rules.d
 ```
-Creat a file `ttyUSB.rules` and put the following line: `KERNEL=="ttyUSB*", MODE="0666"`. Save the file and disconnect uArm. (if you already have the permission to access USB, you can skip this step)
+Creat a file `ttyUSB.rules` and put the following line: `KERNEL=="ttyUSB*", MODE="0666"`. Save the file and **reconnect** uArm USB to make it effective. (if you already have the permission to access USB, you can skip this step)
 
 For using this package, the [pyUarm](https://github.com/uArm-Developer/pyuarm) library **SHOULD** be installed at first.
 ```bash
 $ pip install pyuarm
 ```
-Reconnect uArm to computer and upgrade your uArmProtocol Firmware
+Connect uArm to computer and upgrade your uArmProtocol Firmware
 ```bash
-$ python -m pyuarm.tools.firmware_helper
+$ uarm-firmware -u
 ```
 
 ### 1.2 Package Download and Install
