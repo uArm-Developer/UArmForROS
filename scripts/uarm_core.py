@@ -35,7 +35,7 @@ from uarm.msg import CoordsWithTS4
 
 # Read current Coords function
 def readCurrentCoords():
-	cc = uarm.read_coordinate()
+	cc = uarm.get_position()
 	print 'Current location is x: %2.2fcm, y: %2.2fcm, z: %2.2fcm.' %(cc[0], float(cc[1]), float(cc[2]))
 
 	rospy.set_param('current_x', cc[0])
@@ -45,10 +45,10 @@ def readCurrentCoords():
 # Read current Angles function
 def readCurrentAngles():
 	ra = {}
-	ra['s1'] = uarm.read_servo_angle(0,1)
-	ra['s2'] = uarm.read_servo_angle(1,1)
-	ra['s3'] = uarm.read_servo_angle(2,1)
-	ra['s4'] = uarm.read_servo_angle(3,1)
+	ra['s1'] = uarm.get_servo_angle(0)
+	ra['s2'] = uarm.get_servo_angle(1)
+	ra['s3'] = uarm.get_servo_angle(2)
+	ra['s4'] = uarm.get_servo_angle(3)
 	
 	print 'Four Servo Angles: %2.2f, %2.2f, %2.2f and %2.2f degrees.' %(ra['s1'], ra['s2'],ra['s3'],ra['s4'])
 
@@ -60,7 +60,7 @@ def readCurrentAngles():
 # Read stopper function
 def readStopperStatus():
 	for i in range(2):
-		val = uarm.read_digital(2,1)
+		val = uarm.get_digital(2)
 	if val == 1:
 		print 'Stopper is actived'
 		rospy.set_param('stopper_status','HIGH')
@@ -179,7 +179,7 @@ def controlFcn():
 			
 		elif commands == 'exit': 
 			print 'Detach all servos and exit the program'
-			uarm.detach_all_servos()
+			uarm.set_servo_detach()
 			sys.exit(0)
 
 		elif len(commands) == 0:
@@ -191,7 +191,7 @@ def controlFcn():
 			# Detach
 			if commands_split[0] == 'detach'or commands_split[0] == 'de':
 				if len(commands_split) == 1:
-					uarm.detach_all_servos()
+					uarm.set_servo_detach()
 				else:
 					print 'no other commands should be input'
 				pass
@@ -199,7 +199,7 @@ def controlFcn():
 			# Attach
 			if commands_split[0] == 'attach'or commands_split[0] == 'at':
 				if len(commands_split) == 1:
-					uarm.attach_all_servos()
+					uarm.set_servo_attach()
 				else:
 					print 'no other commands should be input'
 				pass
@@ -220,9 +220,9 @@ def controlFcn():
 					print 'Too many inputs'
 				else:
 					if commands_split[1] == '1' or commands_split[1].lower() == 'high' or commands_split[1].lower() == 'on':
-						uarm.pump_control(1)
+						uarm.set_pump(1)
 					elif commands_split[1] == '0' or commands_split[1].lower() == 'low'or commands_split[1].lower() == 'off':
-						uarm.pump_control(0)
+						uarm.set_pump(0)
 					else:
 						print 'Incorrect inputs, should input 1 / 0 / HIGH / LOW / ON / OFF'
 				pass
@@ -249,10 +249,10 @@ def controlFcn():
 						elif a[i] <0:
 							a[i] = 0
 
-					uarm.write_servo_angle(0, a['s1'], 1)
-					uarm.write_servo_angle(1, a['s2'], 1)
-					uarm.write_servo_angle(2, a['s3'], 1)
-					uarm.write_servo_angle(3, a['s4'], 1)
+					uarm.set_servo_angle(0, a['s1'])
+					uarm.set_servo_angle(1, a['s2'])
+					uarm.set_servo_angle(2, a['s3'])
+					uarm.set_servo_angle(3, a['s4'])
 				else:
 					print '4 servo angles should be input'
 				pass
@@ -270,33 +270,33 @@ def controlFcn():
 				if len(commands_split) == 4:
 					x = float(commands_split[1])
 					y = float(commands_split[2])
-					if y>0:
+					if y<0:
 						y = -y
 					z = float(commands_split[3])
-					uarm.move_to(x, y, z, None, 0, 2, 0, 0)
+					uarm.set_position(x, y, z)
 
 				elif len(commands_split) == 5:
 					x = float(commands_split[1])
 					y = float(commands_split[2])
-					if y>0:
+					if y<0:
 						y = -y
 					z = float(commands_split[3])
 					time = int(commands_split[4])
-					uarm.move_to(x, y, z, None, 0, time, 0, 0)
-
+					uarm.set_position(x, y, z, time)
 					pass
 
 				elif len(commands_split) == 6:
 					x = float(commands_split[1])
 					y = float(commands_split[2])
-					if y>0:
+					if y<0:
 						y = -y
 					z = float(commands_split[3])
 					time = int(commands_split[4])
 					servo_4 = int(commands_split[5])
 					if servo_4 > 180: servo_4 = 180
 					if servo_4 < 0 : servo_4 = 0
-					uarm.move_to(x, y, z, servo_4, 0, time, 0, 0)
+					uarm.set_position(x, y, z, time)
+					uarm.set_servo_angle(3,servo_4)
 					pass
 
 				else:
@@ -310,10 +310,10 @@ def pumpCallack(data):
 	data_input = data.data
 
 	if data_input == 0:
-		uarm.pump_control(0)
+		uarm.set_pump(0)
 		print 'Pump: Off'
 	elif data_input == 1:
-		uarm.pump_control(1)
+		uarm.set_pump(1)
 		print 'Pump: On'
 	else:
 		pass
@@ -326,10 +326,10 @@ def pumpStrCallack(data):
 	print data_input
 	
 	if data_input.lower() == 'low' or data_input.lower() == 'off':
-		uarm.pump_control(0)
+		uarm.set_pump(0)
 		print 'Pump: Off'
 	elif data_input.lower() == 'on' or data_input.lower() == 'high':
-		uarm.pump_control(1)
+		uarm.set_pump(1)
 		print 'Pump: On'
 	else:
 		pass
@@ -347,10 +347,10 @@ def writeAnglesCallback(servos):
 		if servo[i]>180: servo[i] = 180
 		if servo[i]<0: servo[i] = 0
 
-	uarm.write_servo_angle(0, servo['s1'], 1)
-	uarm.write_servo_angle(1, servo['s2'], 1)
-	uarm.write_servo_angle(2, servo['s3'], 1)
-	uarm.write_servo_angle(3, servo['s4'], 1)
+	uarm.set_servo_angle(0, servo['s1'])
+	uarm.set_servo_angle(1, servo['s2'])
+	uarm.set_servo_angle(2, servo['s3'])
+	uarm.set_servo_angle(3, servo['s4'])
 
 	print 'Movement: Moved Once'
 
@@ -360,10 +360,10 @@ def attchCallback(attachStatus):
 	data_input = attachStatus.data
 	
 	if data_input.lower() == 'attach' :
-		uarm.attach_all_servos()
+		uarm.set_servo_attach()
 		print 'uArm: Attach'
 	elif data_input.lower() == 'detach':
-		uarm.detach_all_servos()
+		uarm.set_servo_detach()
 		print 'uArm: Detach'
 	else:
 		pass
@@ -373,10 +373,10 @@ def attchCallback(attachStatus):
 def moveToCallback(coords):
 	x = coords.x
 	y = coords.y
-	if y>0:
+	if y<0:
 		y = -y
 	z = coords.z
-	uarm.move_to(x, y, z, None, 0, 2, 0, 0)
+	uarm.set_position(x, y, z)
 	print 'Movement: Moved Once' 
 
 
@@ -384,16 +384,17 @@ def moveToCallback(coords):
 def moveToTimeCallback(coordsAndT):
 	x = coordsAndT.x
 	y = coordsAndT.y
-	if y>0:
+	if y<0:
 		y = -y
 	z = coordsAndT.z
 	time = coordsAndT.time
 	if time == 0:
-		uarm.move_to(x, y, z, None, 0, 0, 0, 0)
+		uarm.set_position(x, y, z)
 	else:
-		uarm.move_to(x, y, z, None, 0, time, 0, 0)
+		uarm.set_position(x, y, z, time)
 
 	print 'Movement: Moved Once' 
+	print 'Move to x: %2.2f, y: %2.2f, z: %2.2f.' %(float(x), float(y), float(z))
 	pass
 
 
@@ -402,14 +403,15 @@ def moveToTimeAndS4Callback(coordsAndTS4):
 
 	x = coordsAndTS4.x
 	y = coordsAndTS4.y
-	if y>0:
+	if y<0:
 		y = -y
 	z = coordsAndTS4.z
 	time = coordsAndTS4.time
 	s4 = coordsAndTS4.servo_4
 	if s4 > 180: s4 = 180
 	if s4 <0 : s4 =0
-	uarm.move_to(x, y, z, s4, 0, time, 0, 0)
+	uarm.set_position(x, y, z, time)
+	uarm.set_servo_angle(3,s4)
 	print 'Movement: Moved Once' 
 	pass
 
