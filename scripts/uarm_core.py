@@ -35,8 +35,8 @@ from uarm.msg import CoordsWithTS4
 
 # Read current Coords function
 def readCurrentCoords():
-	cc = uarm.read_coordinate()
-	print 'Current location is x: %2.2fcm, y: %2.2fcm, z: %2.2fcm.' %(cc[0], float(cc[1]), float(cc[2]))
+	cc = uarm.get_position()
+	print 'Current location is x: %2.2fcm, y: %2.2fcm, z: %2.2fcm.' %(float(cc[0]), float(cc[1]), float(cc[2]))
 
 	rospy.set_param('current_x', cc[0])
 	rospy.set_param('current_y', float(cc[1]))
@@ -45,10 +45,10 @@ def readCurrentCoords():
 # Read current Angles function
 def readCurrentAngles():
 	ra = {}
-	ra['s1'] = uarm.read_servo_angle(0,1)
-	ra['s2'] = uarm.read_servo_angle(1,1)
-	ra['s3'] = uarm.read_servo_angle(2,1)
-	ra['s4'] = uarm.read_servo_angle(3,1)
+	ra['s1'] = uarm.get_servo_angle(0)
+	ra['s2'] = uarm.get_servo_angle(1)
+	ra['s3'] = uarm.get_servo_angle(2)
+	ra['s4'] = uarm.get_servo_angle(3)
 	
 	print 'Four Servo Angles: %2.2f, %2.2f, %2.2f and %2.2f degrees.' %(ra['s1'], ra['s2'],ra['s3'],ra['s4'])
 
@@ -59,16 +59,64 @@ def readCurrentAngles():
 
 # Read stopper function
 def readStopperStatus():
-	for i in range(2):
-		val = uarm.read_digital(2,1)
-	if val == 1:
+	val = uarm.get_tip_sensor()
+	if val == True:
 		print 'Stopper is actived'
 		rospy.set_param('stopper_status','HIGH')
-	elif val == 0:
+	else:
 		print 'Stopper is not actived'
 		rospy.set_param('stopper_status','LOW')
+		
+		
+# Write single angle
+def writeSingleAngle(num, angle):
+	# limits of each servo
+	s3_max = 170 - uarm.get_servo_angle(1)
+	if num == 1:
+		if angle > 160:
+			angle = 160
+		elif angle < 20:
+			angle = 20
+	elif num == 2:
+		if angle > 140:
+			angle = 140
+		elif angle < 0:
+			angle = 0
+	elif num == 3:
+		if angle > s3_max:
+			angle = s3_max
+		elif angle < 0:
+			angle = 0
+	elif num == 4:
+		if angle > 180:
+			angle = 180
+		elif angle < 0:
+			angle = 0
 	else:
-		pass
+		print "Input incorrect: wrong servo number"
+		
+	uarm.set_servo_angle(num-1, angle)
+	
+	
+# Write coordinate: x y z and speed
+def writeCoordinate(coordinate):
+	x = float(coordinate[1])
+	y = float(coordinate[2])
+	z = float(coordinate[3])
+	if len(coordinate) == 4:
+		speed = 5
+
+	elif len(coordinate) == 5:
+		speed = float(coordinate[4])
+		
+	else:
+		print "Input incorrect: wrong number of arguments"
+		
+	if y > 0:
+		y = -y
+		
+	uarm.set_position(x, y, z, speed)
+	
 
 # Main connect function
 def connectFcn():
@@ -147,39 +195,35 @@ def controlFcn():
 
 		if commands == 'h':
 			print ' '
-			print 'You can input certain functions or commands to control uarm'
-			print '============================================================'
-			print 'h			- show help and list all commands'
-			print 'e            		- exit loop - begin to listen to subscriber'
-			print 'attach	    		- attach uarm (in short: at)'
-			print 'detach			- detach uarm (in short: de)'
-			print 'readAngles   		- print 4 angles of uarm (in short: ra)'
-			print 'writeAngles a1 a2 a3 a4  - write 4 angles of uarm (in short: wa)'
-			print '				- for example(wa 120 40 40 60)'
-			print 'currentCoords 		- print current coordinates (in short: cc)'
-			print '-------- move to --------- '
-			print 'moveTo x y z  		- move To a certain point (in short: mt)'
-			print '				- for example (mt 12 -12 12)'
-			print 'moveTo x y z sec  	- move To a certain point with time'
-			print '				- for example (mt 12 -12 12 5)'
-			print 'moveTo x y z sec servo_4 - move To a certain point with time and servo_4 angle'
-			print '				- for example (mt 12 -12 12 5 40)'
-			print '--------------------------'
-			print 'pump on/of		- pump on or pump off (in short: pp 1/0)'
-			print '				- for example (pp 1) or (pp 0)'
-			print 'stopperStatus 		- print status of stopper (in short: ss)'
-			print 'exit			- detach all servos and exit the program'
-			print '============================================================'
-
+			print 'Control mode'
+			print '=================================================================='
+			print 'h                  - show help and list all commands'
+			print 'cc                 - current coordinates'
+			print 'ra                 - read angles'
+			print 'wa a1 a2 a3 a4     - write angles'
+			print '                     for example: wa 120 80 40 40'
+			print 'wsa servo a        - write single angle'
+			print '                     for example: wsa 1 50'
+			print 'mt x y z           - move to a point with speed(defaut: 5mm/s)'
+			print '                     for example: mt 0 12 12'
+			print 'mt x y z speed     - move to a point with speed(mm/s)'
+			print '                     for example: mt 0 12 12 10'
+			print 'pp 1/0             - pump on/off'
+			print 'ss                 - status of stopper'
+			print 'at                 - attach uarm'
+			print 'de                 - detach uarm'
+			print 'l                  - begin listener mode'
+			print 'e                  - exit'
+			print '=================================================================='
 			print ' '
 
-		elif commands == 'e': 
+		elif commands == 'l': 
 			print 'Exit: Break the control fuction loop'
 			break;
 			
-		elif commands == 'exit': 
+		elif commands == 'e': 
 			print 'Detach all servos and exit the program'
-			uarm.detach_all_servos()
+			uarm.set_servo_detach()
 			sys.exit(0)
 
 		elif len(commands) == 0:
@@ -191,7 +235,7 @@ def controlFcn():
 			# Detach
 			if commands_split[0] == 'detach'or commands_split[0] == 'de':
 				if len(commands_split) == 1:
-					uarm.detach_all_servos()
+					uarm.set_servo_detach()
 				else:
 					print 'no other commands should be input'
 				pass
@@ -199,7 +243,7 @@ def controlFcn():
 			# Attach
 			if commands_split[0] == 'attach'or commands_split[0] == 'at':
 				if len(commands_split) == 1:
-					uarm.attach_all_servos()
+					uarm.set_servo_attach()
 				else:
 					print 'no other commands should be input'
 				pass
@@ -220,9 +264,9 @@ def controlFcn():
 					print 'Too many inputs'
 				else:
 					if commands_split[1] == '1' or commands_split[1].lower() == 'high' or commands_split[1].lower() == 'on':
-						uarm.pump_control(1)
+						uarm.set_pump(1)
 					elif commands_split[1] == '0' or commands_split[1].lower() == 'low'or commands_split[1].lower() == 'off':
-						uarm.pump_control(0)
+						uarm.set_pump(0)
 					else:
 						print 'Incorrect inputs, should input 1 / 0 / HIGH / LOW / ON / OFF'
 				pass
@@ -234,27 +278,24 @@ def controlFcn():
 				else:
 					print 'no other commands should be input'
 				pass
+				
+			# Write Single Angles
+			elif commands_split[0] == 'writeSingleAngles' or commands_split[0] == 'wsa':
+				if len(commands_split) == 3:
+					writeSingleAngle(int(commands_split[1]), float(commands_split[2]))
+				else:
+					print 'Input incorrect: Wrong number of arguments'
+				pass
 
 			# Write Angles
-			elif commands_split[0] == 'writeAngles' or commands_split[0] == 'wa':
+			elif commands_split[0] == 'wa':
 				if len(commands_split) == 5:
-					a = {}
-					a['s1'] = int(commands_split[1]) 
-					a['s2'] = int(commands_split[2])
-					a['s3'] = int(commands_split[3])
-					a['s4'] = int(commands_split[4])
-					for i in a:
-						if a[i] > 180:
-							a[i] = 180
-						elif a[i] <0:
-							a[i] = 0
-
-					uarm.write_servo_angle(0, a['s1'], 1)
-					uarm.write_servo_angle(1, a['s2'], 1)
-					uarm.write_servo_angle(2, a['s3'], 1)
-					uarm.write_servo_angle(3, a['s4'], 1)
+					writeSingleAngle(1, float(commands_split[1]))
+					writeSingleAngle(2, float(commands_split[2]))
+					writeSingleAngle(3, float(commands_split[3]))
+					writeSingleAngle(4, float(commands_split[4]))
 				else:
-					print '4 servo angles should be input'
+					print 'Input incorrect: Wrong number of arguments'
 				pass
 
 			# Current Angles
@@ -267,42 +308,13 @@ def controlFcn():
 
 			# Move Tos
 			elif commands_split[0] == 'moveTo' or commands_split[0] == 'mt':
-				if len(commands_split) == 4:
-					x = float(commands_split[1])
-					y = float(commands_split[2])
-					if y>0:
-						y = -y
-					z = float(commands_split[3])
-					uarm.move_to(x, y, z, None, 0, 2, 0, 0)
-
-				elif len(commands_split) == 5:
-					x = float(commands_split[1])
-					y = float(commands_split[2])
-					if y>0:
-						y = -y
-					z = float(commands_split[3])
-					time = int(commands_split[4])
-					uarm.move_to(x, y, z, None, 0, time, 0, 0)
-
-					pass
-
-				elif len(commands_split) == 6:
-					x = float(commands_split[1])
-					y = float(commands_split[2])
-					if y>0:
-						y = -y
-					z = float(commands_split[3])
-					time = int(commands_split[4])
-					servo_4 = int(commands_split[5])
-					if servo_4 > 180: servo_4 = 180
-					if servo_4 < 0 : servo_4 = 0
-					uarm.move_to(x, y, z, servo_4, 0, time, 0, 0)
-					pass
-
+				if len(commands_split) == 4 or len(commands_split) == 5:
+					writeCoordinate(commands_split)
 				else:
-					print 'Input incorrects'
+					print 'Input incorrect: Wrong number of arguments'
 			else:
 				pass
+
 			
 # pump control function once received data from topic
 def pumpCallack(data):
@@ -347,10 +359,10 @@ def writeAnglesCallback(servos):
 		if servo[i]>180: servo[i] = 180
 		if servo[i]<0: servo[i] = 0
 
-	uarm.write_servo_angle(0, servo['s1'], 1)
-	uarm.write_servo_angle(1, servo['s2'], 1)
-	uarm.write_servo_angle(2, servo['s3'], 1)
-	uarm.write_servo_angle(3, servo['s4'], 1)
+	uarm.set_servo_angle(0, servo['s1'])
+	uarm.set_servo_angle(1, servo['s2'])
+	uarm.set_servo_angle(2, servo['s3'])
+	uarm.set_servo_angle(3, servo['s4'])
 
 	print 'Movement: Moved Once'
 
@@ -376,7 +388,7 @@ def moveToCallback(coords):
 	if y>0:
 		y = -y
 	z = coords.z
-	uarm.move_to(x, y, z, None, 0, 2, 0, 0)
+	uarm.set_position(x, y, z, 2)
 	print 'Movement: Moved Once' 
 
 
@@ -389,9 +401,9 @@ def moveToTimeCallback(coordsAndT):
 	z = coordsAndT.z
 	time = coordsAndT.time
 	if time == 0:
-		uarm.move_to(x, y, z, None, 0, 0, 0, 0)
+		uarm.set_position(x, y, z, 2)
 	else:
-		uarm.move_to(x, y, z, None, 0, time, 0, 0)
+		uarm.set_position(x, y, z, 2)
 
 	print 'Movement: Moved Once' 
 	pass
@@ -409,7 +421,7 @@ def moveToTimeAndS4Callback(coordsAndTS4):
 	s4 = coordsAndTS4.servo_4
 	if s4 > 180: s4 = 180
 	if s4 <0 : s4 =0
-	uarm.move_to(x, y, z, s4, 0, time, 0, 0)
+	uarm.set_position(x, y, z, s4, 0, time, 0, 0)
 	print 'Movement: Moved Once' 
 	pass
 
