@@ -74,7 +74,7 @@ source ~/.bashrc
     # For example: move uarm x,y,z (use mt in short for moveTo)
     Input Commands (Input h to see all commands):  moveTo 12 -12 12
     ```
-    Input `e` to exit control-mode and get into Monitor mode
+    Input `l` to exit control-mode and get into Monitor mode
     
     **Step 3**: Monitor-Mode
     
@@ -264,9 +264,9 @@ roscore
 In the **second** shall, connect uArm and set the listen mode as shown above
 ```
 rosrun uarm uarm_core.py connect  // connect uArm
-e                                 // transfer to monitor mode
+l                                 // transfer to monitor mode
 ```
--**Step 2**: Luanch
+-**Step 2**: Launch
  
 a) For visualization function, in the **third** shall, run
 
